@@ -17,27 +17,28 @@
 
 CXX ?= g++
 
-USE_UPNP:=-
+USE_LEVELDB:=1
 USE_IPV6:=1
+USE_ASM:=1
 
-DEPSDIR?=/usr/local
+DEPSDIR?=c:/deps
 BOOST_SUFFIX?=-mgw49-mt-s-1_57
 
 INCLUDEPATHS= \
  -I"$(CURDIR)" \
  -I"c:/deps" \
  -I"c:/deps/boost_1_57_0" \
- -I"c:/deps/db-4.8.30.NC/build_unix" \
+ -I"c:/deps/db-6.0.20/build_unix" \
  -I"c:/deps/miniupnpc" \
- -I"c:/deps/openssl-1.0.1l/include"
+ -I"c:/deps/openssl-1.0.2/include"
 
 LIBPATHS= \
  -L"$(CURDIR)/leveldb" \
  -L"$(DEPSDIR)/lib" \
  -L"c:/deps/boost_1_57_0/stage/lib" \
- -L"c:/deps/db-4.8.30.NC/build_unix" \
+ -L"c:/deps/db-6.0.20/build_unix" \
  -L"c:/deps/miniupnpc" \
- -L"c:/deps/openssl-1.0.1l"
+ -L"c:/deps/openssl-1.0.2"
 
 LIBS= \
  -l leveldb \
@@ -54,7 +55,7 @@ LIBS= \
 DEFS=-DWIN32 -D_WINDOWS -DBOOST_THREAD_USE_LIB -DBOOST_SPIRIT_THREADSAFE
 DEBUGFLAGS=-g
 CFLAGS=-mthreads -O3 -msse2 -w -Wall -Wextra -Wno-ignored-qualifiers -Wformat -Wformat-security -Wno-unused-parameter $(DEBUGFLAGS) $(DEFS) $(INCLUDEPATHS)
-LDFLAGS=-Wl,--dynamicbase -Wl,--nxcompat
+LDFLAGS=-Wl,--dynamicbase -Wl,--nxcompat -Wl,--large-address-aware -static
 
 TESTDEFS = -DTEST_DATA_DIR=$(abspath test/data)
 
@@ -131,7 +132,7 @@ DEFS += $(addprefix -I,$(CURDIR)/leveldb/include)
 DEFS += $(addprefix -I,$(CURDIR)/leveldb/helpers)
 OBJS += obj/txdb-leveldb.o
 leveldb/libleveldb.a:
-	cd leveldb; make; cd ..
+	cd leveldb; TARGET_OS=NATIVE_WINDOWS make libleveldb.a libmemenv.a; cd ..
 obj/txdb-leveldb.o: leveldb/libleveldb.a
 
 obj/%.o: %.cpp $(HEADERS)
