@@ -155,3 +155,44 @@ exploit even if a vulnerability is found, you can take the following measures:
     RW- R-- RW-
 
     The STK RW- means that the stack is readable and writeable but not executable.
+
+	
+	
+### Additional info about unix compile
+
+
+sudo apt-get install libdb++-dev -y
+
+cd src/
+
+chmod 755 leveldb/build_detect_platform
+
+cd leveldb 
+
+make libleveldb.a libmemenv.a
+
+cd ..
+
+wget http://miniupnp.free.fr/files/miniupnpc-1.6.20120509.tar.gz
+
+tar zxvf miniupnpc-1.6.20120509.tar.gz
+
+cd miniupnpc-1.6.20120509
+
+make
+
+sudo su
+
+make install
+
+su postcoin
+
+cd ..
+
+sudo apt-get install libboost-all-dev
+
+make -f makefile.unix
+
+chmod +x PostCoind
+
+sudo mv PostCoind /usr/bin/
